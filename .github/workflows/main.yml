@@ -1,0 +1,25 @@
+name: CI & CD
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Pull
+        uses: actions/checkout@v1
+      - name: Docker Build & Docker Push
+        uses: kciter/aws-ecr-action@master
+        with:
+          access_key_id: ${{ secrets.AWS_EKS_ACCESS_KEY_ID }}
+          secret_access_key: ${{ secrets.AWS_EKS_SECRET_ACCESS_KEY }}
+          account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+          repo: ${{ secrets.REPO }}
+          dockerfile: Dockerfile
+          region: ap-northeast-1
+          tags: latest,${{ github.sha }}
+          create_repo: false
